@@ -117,6 +117,7 @@ public class Register extends JFrame {
                 user.setPassword(new String(txt_pass.getPassword()));
                 user.setFirstNameLastName(txt_ad.getText());
                 user.setActivated(true);
+                user.setStatus("User");
                 
                 // Create the user and handle the result
                 Boolean result = user.Create(user);

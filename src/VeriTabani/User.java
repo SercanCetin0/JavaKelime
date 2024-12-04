@@ -44,14 +44,20 @@ public class User implements Crud<User> {
     private String email;          // Kullanıcı e-posta adresi
     private String password;       // Kullanıcı şifresi
     private boolean isActivated;   // Kullanıcının etkin olup olmadığı
-	
+	private String Status;
     
-    @Override
+    public String getStatus() {
+		return Status;
+	}
+	public void setStatus(String status) {
+		Status = status;
+	}
+	@Override
     public Boolean Create(User item) {
         ConnectDB db = new ConnectDB();
         Connection conn = db.getConnection();
 
-        String sql = "INSERT INTO Users (Email, Password, isActivated, FirstName_LastName) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO Users (Email, Password, isActivated, FirstName_LastName,Status) VALUES (?, ?, ?, ?,?)";
 
         try {
             PreparedStatement statement = conn.prepareStatement(sql);
@@ -59,7 +65,7 @@ public class User implements Crud<User> {
             statement.setString(2, item.getPassword());
             statement.setBoolean(3, item.getIsActivated());
             statement.setString(4, item.getFirstNameLastName());
-
+            statement.setString(5, item.getStatus());
             int rowsAffected = statement.executeUpdate(); // Use executeUpdate for insert
 
             return rowsAffected > 0; // Return true if a row was inserted
