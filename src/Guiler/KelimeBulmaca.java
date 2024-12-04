@@ -18,6 +18,7 @@ import java.util.Random;
 import javax.swing.event.DocumentListener;
 
 import VeriTabani.User;
+import VeriTabani.UserSession;
 import VeriTabani.Word;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -31,7 +32,8 @@ public class KelimeBulmaca extends JFrame {
     private JLabel lbl_trr; // Move label declaration here for accessibility
     private JLabel lbl_image; // Moved here for accessibility
     private JButton btnAnasayfa;
-
+    String userId = UserSession.getInstance().getUserId(); 
+    String rol = UserSession.getInstance().getUserRol(); 
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> {
             try {

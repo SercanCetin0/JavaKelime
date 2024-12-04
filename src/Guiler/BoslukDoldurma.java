@@ -1,5 +1,6 @@
 package Guiler;
 
+import VeriTabani.UserSession;
 import VeriTabani.Word; // Word sınıfını içe aktarıyoruz
 import javax.swing.*;
 import java.awt.*;
@@ -15,7 +16,8 @@ public class BoslukDoldurma extends JFrame {
     private String enKelime; // İngilizce kelime
     private String trKelime; // Türkçe kelime
     private int[] emptyIndices; // Boşlukların indeksleri
-
+    String userId = UserSession.getInstance().getUserId(); 
+    String rol = UserSession.getInstance().getUserRol(); 
     public BoslukDoldurma() {
         setTitle("Boşluk Doldurma Oyunu");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

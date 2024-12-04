@@ -1,5 +1,6 @@
 package Guiler;
 
+import VeriTabani.UserSession;
 import VeriTabani.Word;
 import javax.swing.*;
 import java.awt.*;
@@ -14,7 +15,8 @@ public class CoktanSecmeli extends JFrame {
     private JButton btnSecenek1, btnSecenek2, btnSecenek3, btnAnasayfa, btnYenile;
     private String dogruKelime; // İngilizce kelime
     private String dogruCevap; // Türkçe karşılık
-
+    String userId = UserSession.getInstance().getUserId(); 
+    String rol = UserSession.getInstance().getUserRol(); 
     public CoktanSecmeli() {
         setTitle("Çoktan Seçmeli Kelime Oyunu");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

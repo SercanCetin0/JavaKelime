@@ -7,6 +7,8 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import VeriTabani.User;
+import VeriTabani.UserLoginResult;
+import VeriTabani.UserSession;
 
 import javax.swing.JButton;
 import javax.swing.JTextField;
@@ -120,10 +122,14 @@ public class Login extends JFrame {
 		
 		user.setEmail(Email);
 		user.setPassword(Password);
-		int userId=user.UserLoginControl();
+		UserLoginResult userData=user.UserLoginControl();
+		String userId = String.valueOf( userData.getId());
+		String Rol=userData.getStatus();
 		lbl_Hata.setVisible(true);
-		if(userId!=0)
+		if(userId!=null)
 		{
+			UserSession.getInstance().setUserRol(Rol);
+			UserSession.getInstance().setUserId(userId);
 			lbl_Hata.setForeground(new Color(0, 255, 0));
 			Thread.sleep(1000);
 			lbl_Hata.setText("Başarılı! Yönlendiriliyorsunuz.");
@@ -132,6 +138,7 @@ public class Login extends JFrame {
 			kb.setVisible(true);
 		}
 		else {
+			
 			lbl_Hata.setForeground(new Color(255, 0, 0));
 			lbl_Hata.setText("Giriş Başarısız. Tekrar Deneyiniz!");
 		}

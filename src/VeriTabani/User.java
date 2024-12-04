@@ -98,32 +98,34 @@ return true;
 		// TODO Auto-generated method stub
 		return null;
 	}
-	public int UserLoginControl() {
+	public UserLoginResult UserLoginControl() {
 	    ConnectDB db = new ConnectDB();
 	    Connection conn = db.getConnection();
 
-	    String sql = "SELECT * FROM Users WHERE Email = ? AND Password = ?"; 
+	    String sql = "SELECT * FROM Users WHERE Email = ? AND Password = ?";
 
 	    try {
 	        PreparedStatement statement = conn.prepareStatement(sql);
 	        statement.setString(1, this.email);
-	        statement.setString(2, this.password); 
+	        statement.setString(2, this.password);
 
 	        ResultSet resultSet = statement.executeQuery();
 
 	        if (resultSet.next()) {
-	            return resultSet.getInt("id");
+	            int id = resultSet.getInt("id");
+	            String status = resultSet.getString("Status");
+	            return new UserLoginResult(id, status);
 	        } else {
-	        	return 0;
+	            return null; // No user found
 	        }
 	    } catch (SQLException e) {
 	        e.printStackTrace(); // Handle exception appropriately in production code.
-	        return 0;
-	    } 
-	    finally {
-			db.closeConnection(conn);
-		}
+	        return null;
+	    } finally {
+	       
+	    }
 	}
+
 	
 	
 }
