@@ -55,7 +55,15 @@ public class Categories implements ICategories{
 	}
 	@Override
 	public Boolean Delete(int id) {
-		return true;		
+		try (Connection conn = new ConnectDB().getConnection();
+	             PreparedStatement pstmt = conn.prepareStatement("DELETE FROM Categories WHERE id = ?")) {
+	            pstmt.setInt(1, id);
+	            pstmt.executeUpdate();
+	            return true;
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	            return false;
+	        }		
 	}
 	@Override
 	public List<Categories> Select() {

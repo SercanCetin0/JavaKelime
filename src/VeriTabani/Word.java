@@ -53,6 +53,17 @@ public class Word implements IWord{
 	    private String tr;       // Türkçe
 	    private String en;       // İngilizce
 	    private String wordImage; // Kelime Görseli
+	    private String CategoryName;
+	    
+	    
+	public String getCategoryName() {
+			return CategoryName;
+		}
+
+		public void setCategoryName(String categoryName) {
+			CategoryName = categoryName;
+		}
+
 	@Override
 	public Boolean Create(Word item) {
 		ConnectDB db = new ConnectDB();
@@ -84,14 +95,15 @@ public class Word implements IWord{
 		 ConnectDB db = new ConnectDB();
 		    Connection conn = db.getConnection();
 		    
-		    String sql = "UPDATE Words SET Tr = ?, En = ?, WordImage = ? WHERE id = ?"; // Güncelleme işlemi için SQL sorgusu.
+		    String sql = "UPDATE Words SET Tr = ?, En = ?, WordImage = ?,CategoryId=? WHERE id = ?"; // Güncelleme işlemi için SQL sorgusu.
 		    
 		    try {
 		        PreparedStatement statement = conn.prepareStatement(sql);
 		        statement.setString(1, item.tr); // 'tr' alanını sorguya ekliyoruz.
 		        statement.setString(2, item.en); // 'en' alanını sorguya ekliyoruz.
 		        statement.setString(3, item.wordImage); // 'wordImage' alanını sorguya ekliyoruz.
-		        statement.setInt(4, id); // 'id' alanını sorguya ekliyoruz (güncellemek için).
+		        statement.setInt(4, item.categoryId); // 'id' alanını sorguya ekliyoruz (güncellemek için).
+		        statement.setInt(5, item.id); // 'id' alanını sorguya ekliyoruz (güncellemek için).
 
 		        int rowsAffected = statement.executeUpdate(); // Güncelleme işlemi sonucunda etkilenen satır sayısını alıyoruz.
 
@@ -129,29 +141,30 @@ public class Word implements IWord{
 
 	@Override
 	public List<Word> Select() {
-		List<Word> wordList = new ArrayList<>();
+	    List<Word> wordList = new ArrayList<>();
 	    ConnectDB db = new ConnectDB();
 	    Connection conn = db.getConnection();
 	    
-	    String sql = "SELECT * FROM Words"; // Assuming you're fetching from Users table.
+	    // Updated SQL query with INNER JOIN
+	    String sql = "SELECT w.id, w.tr, w.en, w.wordImage, c.CateName FROM Words w " +
+	                 "INNER JOIN Categories c ON w.CategoryId = c.id"; // INNER JOIN with Categories table
 
 	    try {
 	        PreparedStatement statement = conn.prepareStatement(sql);
 	        ResultSet resultSet = statement.executeQuery();
 
 	        while (resultSet.next()) {
-	            Word word = new Word(); // Assuming you have a User class with a default constructor.
+	            Word word = new Word(); // Assuming you have a Word class with a default constructor.
 	            word.setId(resultSet.getInt("id")); // Adjust the field names based on your table structure.
 	            word.setTr(resultSet.getString("tr"));
 	            word.setEn(resultSet.getString("en"));
-
 	            word.setWordImage(resultSet.getString("wordImage"));
-	            // Set other user properties as needed.
+	            word.setCategoryName(resultSet.getString("CateName")); // Set the CatName from Categories table
 
 	            wordList.add(word);
 	        }
 
-	        return wordList.isEmpty() ? null : wordList; // Return null if no users found, otherwise return the list.
+	        return wordList.isEmpty() ? null : wordList; // Return null if no words found, otherwise return the list.
 	    } catch (SQLException e) {
 	        e.printStackTrace(); // Handle exception appropriately in production code.
 	        return null;
@@ -159,6 +172,7 @@ public class Word implements IWord{
 	        db.closeConnection(conn);
 	    }
 	}
+
 
 	@Override
 	public Word ListSelectById(int id) {

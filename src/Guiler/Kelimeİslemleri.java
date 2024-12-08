@@ -1,5 +1,6 @@
 package Guiler;
 
+import java.awt.Color;
 import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -10,7 +11,10 @@ import javax.swing.JTextField;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 import java.awt.FlowLayout; // For horizontally aligned components
+
+import VeriTabani.Categories;
 import VeriTabani.Word;
 import java.util.List;
 import javax.swing.JLabel;
@@ -18,8 +22,8 @@ import javax.swing.ImageIcon;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 
 public class Kelimeİslemleri extends JFrame {
@@ -31,6 +35,8 @@ public class Kelimeİslemleri extends JFrame {
     private JTextField englishTextField;
     private JTextField wordImageTextField;
     private JLabel imageLabel; // Label to display the image
+    private List<Categories> categoriesList;
+    private JComboBox<String> comboBox;
 
     /**
      * Launch the application.
@@ -67,12 +73,12 @@ public class Kelimeİslemleri extends JFrame {
         // Check if the wordList is not null
         if (wordList != null) {
             // Table column names
-            String[] columnNames = {"ID", "Turkish", "English", "Word Image"};
+            String[] columnNames = {"ID", "Türkçe", "English", "Resim", "Kategori"};
 
             // Create a DefaultTableModel and add rows to it
             DefaultTableModel model = new DefaultTableModel(columnNames, 0);
             for (Word word : wordList) {
-                Object[] row = {word.getId(), word.getTr(), word.getEn(), word.getWordImage()};
+                Object[] row = {word.getId(), word.getTr(), word.getEn(), word.getWordImage(), word.getCategoryName()};
                 model.addRow(row);
             }
 
@@ -106,6 +112,7 @@ public class Kelimeİslemleri extends JFrame {
 
             wordImageTextField = new JTextField();
             wordImageTextField.setColumns(10);
+            wordImageTextField.setEnabled(false);
             textFieldPanel.add(wordImageTextField);
 
             // Create a JLabel to display the image
@@ -132,6 +139,10 @@ public class Kelimeİslemleri extends JFrame {
                             Image newImg = img.getScaledInstance(200, 200, Image.SCALE_SMOOTH); // Resize the image
                             imageIcon = new ImageIcon(newImg); // Set the new image
                             imageLabel.setIcon(imageIcon); // Set the image icon to the label
+
+                            // Update the comboBox with the selected category from the table
+                            String selectedCategoryName = table.getValueAt(selectedRow, 4).toString(); // Category is in the 5th column
+                            comboBox.setSelectedItem(selectedCategoryName); // Set the comboBox to show the category
                         }
                     }
                 }
@@ -151,12 +162,13 @@ public class Kelimeİslemleri extends JFrame {
                     String turkish = turkishTextField.getText();
                     String english = englishTextField.getText();
                     String wordImage = wordImageTextField.getText();
-
-                    
+                    String selectedCategoryName = (String) comboBox.getSelectedItem();
+                    int categoryId = getCategoryIdByName(categoriesList, selectedCategoryName);
                     table.setValueAt(id, selectedRow, 0);
                     table.setValueAt(turkish, selectedRow, 1);
                     table.setValueAt(english, selectedRow, 2);
                     table.setValueAt(wordImage, selectedRow, 3);
+                    table.setValueAt(categoryId, selectedRow, 4);
 
                     JOptionPane.showMessageDialog(this, "Kelime başarıyla güncellendi!");
 
@@ -165,15 +177,20 @@ public class Kelimeİslemleri extends JFrame {
                     updatedWord.setTr(turkish);
                     updatedWord.setEn(english);
                     updatedWord.setWordImage(wordImage);
+                    updatedWord.setCategoryId(categoryId);
 
                     // Update the word in the database (this would depend on your database logic)
                     wordListe.Update(updatedWord);
+
+                    // Refresh the table with updated data after update operation
+                    refreshTableData(model, wordListe.Select());
                 } else {
                     JOptionPane.showMessageDialog(this, "Lütfen bir kelime seçin.");
                 }
             });
-            
-            JButton btn_kelimeB = new JButton("EKle");
+
+            // "EKle" (Add) Button
+            JButton btn_kelimeB = new JButton("Ekle");
             btn_kelimeB.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     dispose();
@@ -183,11 +200,18 @@ public class Kelimeİslemleri extends JFrame {
             });
             btn_kelimeB.setBounds(400, 380, 120, 30);
             contentPane.add(btn_kelimeB);
-            
-            
+
+            // "Sil" (Delete) Button
             JButton deleteButton = new JButton("Sil");
             deleteButton.setBounds(400, 340, 120, 30); // Positioning the button
             contentPane.add(deleteButton);
+
+            // ComboBox for Categories
+            comboBox = new JComboBox<>();
+            comboBox.setBounds(215, 290, 100, 30);
+           // comboBox.setBorder(new LineBorder(Color.BLACK, 2));
+
+            contentPane.add(comboBox);
 
             // Delete Button ActionListener
             deleteButton.addActionListener(e -> {
@@ -213,7 +237,7 @@ public class Kelimeİslemleri extends JFrame {
 
                         // Add updated rows to the table model
                         for (Word word : updatedWordList) {
-                            Object[] row = {word.getId(), word.getTr(), word.getEn(), word.getWordImage()};
+                            Object[] row = {word.getId(), word.getTr(), word.getEn(), word.getWordImage(), word.getCategoryName()};
                             model.addRow(row);
                         }
                     } else {
@@ -223,9 +247,44 @@ public class Kelimeİslemleri extends JFrame {
                     JOptionPane.showMessageDialog(this, "Lütfen silmek için bir kelime seçin.");
                 }
             });
+
+            // Populate ComboBox with categories
+            categoriesList = fetchCategoriesFromDatabase();
+            populateCategoriesComboBox();
         } else {
             System.out.println("No words found in the database.");
         }
-        
+    }
+
+    // Populate the ComboBox with categories
+    private void populateCategoriesComboBox() {
+        for (Categories category : categoriesList) {
+            comboBox.addItem(category.getCateName());
+        }
+    }
+
+    // Kategorinin ID'sini adıyla bul
+    private static int getCategoryIdByName(List<Categories> categoriesList, String categoryName) {
+        for (Categories category : categoriesList) {
+            if (category.getCateName().equals(categoryName)) {
+                return category.getId();
+            }
+        }
+        return -1; // Kategori bulunamazsa -1 döndür
+    }
+
+    // Kategorileri veritabanından al
+    private List<Categories> fetchCategoriesFromDatabase() {
+        Categories categoryObj = new Categories();
+        return categoryObj.Select();
+    }
+
+    // Refresh table data after updating
+    private void refreshTableData(DefaultTableModel model, List<Word> wordList) {
+        model.setRowCount(0); // Clear the existing table
+        for (Word word : wordList) {
+            Object[] row = {word.getId(), word.getTr(), word.getEn(), word.getWordImage(), word.getCategoryName()};
+            model.addRow(row);
+        }
     }
 }
