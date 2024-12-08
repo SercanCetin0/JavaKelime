@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Word implements Crud<Word>{
+public class Word implements IWord{
 	 	private int categoryId;  // Kategori ID'si
 	    public int getCategoryId() {
 			return categoryId;

@@ -6,7 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-public class User implements Crud<User> {
+public class User implements IUser {
 	private int id;                // Kullanıcı ID
     public int getId() {
 		return id;
@@ -98,6 +98,7 @@ return true;
 		// TODO Auto-generated method stub
 		return null;
 	}
+	@Override
 	public UserLoginResult UserLoginControl() {
 	    ConnectDB db = new ConnectDB();
 	    Connection conn = db.getConnection();

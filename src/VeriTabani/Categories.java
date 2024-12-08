@@ -2,7 +2,7 @@ package VeriTabani;
 
 import java.util.List;
 
-public class Categories implements Crud<Categories>{
+public class Categories implements ICategories{
     public int getId() {
 		return id;
 	}

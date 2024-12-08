@@ -2,7 +2,7 @@ package VeriTabani;
 
 import java.util.List;
 
-public class UserWord implements Crud<UserWord> {
+public class UserWord implements IUserWord {
 	 private int id;       // Tam Metin ID
 	    public int getId() {
 		return id;
