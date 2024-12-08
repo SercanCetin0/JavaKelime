@@ -79,14 +79,14 @@ public class Anasayfa extends JFrame {
         });
         btnNewButton_2.setBounds(21, 191, 375, 59);
         contentPane.add(btnNewButton_2);
-
+ 
         // Eğer kullanıcı Admin ise, Admin Sayfası butonunu ekle
         if (rol.equals("Admin")) {
             JButton btnNewButton_3 = new JButton("Admin Sayfası");
             btnNewButton_3.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     dispose();
-                    AdminSayfasi admin = new AdminSayfasi();
+                    Admin admin = new Admin();
                     admin.setVisible(true);
                 }
             });

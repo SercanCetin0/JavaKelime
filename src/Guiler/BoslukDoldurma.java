@@ -87,7 +87,7 @@ public class BoslukDoldurma extends JFrame {
 
     private List<Word> fetchWordsFromDatabase() {
         Word word = new Word();
-        return word.Select(0); // Veritabanından kelimeleri çek
+        return word.Select(); // Veritabanından kelimeleri çek
     }
 
     private void updateLabel() {

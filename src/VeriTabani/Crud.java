@@ -7,7 +7,7 @@ public interface Crud<T> {
 	Boolean Create(T item);
 	Boolean Update(T item);
 	Boolean Delete(int id);
-	List<T> Select(int userid);
+	List<T> Select( );
 	T ListSelectById(int id);
 	
 }

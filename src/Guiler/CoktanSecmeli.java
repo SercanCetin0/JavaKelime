@@ -112,7 +112,7 @@ public class CoktanSecmeli extends JFrame {
 
     private List<Word> fetchWordsFromDatabase() {
         Word word = new Word();
-        return word.Select(0); // Veritabanından kelimeleri çek
+        return word.Select(); // Veritabanından kelimeleri çek
     }
 
     private void updateQuestion() {

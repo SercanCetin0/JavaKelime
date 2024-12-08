@@ -58,7 +58,7 @@ public class Categories implements ICategories{
 		return true;		
 	}
 	@Override
-	public List<Categories> Select(int userid) {
+	public List<Categories> Select() {
 		// TODO Auto-generated method stub
 		return null;
 	}

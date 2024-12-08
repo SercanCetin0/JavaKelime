@@ -118,7 +118,7 @@ public class KelimeBulmaca extends JFrame {
 
     private void updateLabel() {
         Word word = new Word();
-        List<Word> liste = word.Select(1);
+        List<Word> liste = word.Select();
 
         Random random = new Random();
         int randomIndex = random.nextInt(liste.size());

@@ -60,17 +60,54 @@ return true;
 
 	@Override
 	public Boolean Update(Word item) {
-		return true;
+		 ConnectDB db = new ConnectDB();
+		    Connection conn = db.getConnection();
+		    
+		    String sql = "UPDATE Words SET Tr = ?, En = ?, WordImage = ? WHERE id = ?"; // Güncelleme işlemi için SQL sorgusu.
+		    
+		    try {
+		        PreparedStatement statement = conn.prepareStatement(sql);
+		        statement.setString(1, item.tr); // 'tr' alanını sorguya ekliyoruz.
+		        statement.setString(2, item.en); // 'en' alanını sorguya ekliyoruz.
+		        statement.setString(3, item.wordImage); // 'wordImage' alanını sorguya ekliyoruz.
+		        statement.setInt(4, id); // 'id' alanını sorguya ekliyoruz (güncellemek için).
+
+		        int rowsAffected = statement.executeUpdate(); // Güncelleme işlemi sonucunda etkilenen satır sayısını alıyoruz.
+
+		        return rowsAffected > 0; // Eğer en az bir satır güncellenmişse true döner, aksi takdirde false döner.
+		    } catch (SQLException e) {
+		        e.printStackTrace(); // Hata durumunda hata mesajını yazdırıyoruz.
+		        return false;
+		    } finally {
+		        db.closeConnection(conn); // Bağlantıyı kapatıyoruz.
+		    }
 		
 	}
 
 	@Override
 	public Boolean Delete(int id) {
-		return true;
+		 ConnectDB db = new ConnectDB();
+		    Connection conn = db.getConnection();
+		    
+		    String sql = "DELETE FROM Words WHERE id = ?"; // Silme işlemi için SQL sorgusu.
+
+		    try {
+		        PreparedStatement statement = conn.prepareStatement(sql);
+		        statement.setInt(1, id); // id'yi sorguya parametre olarak ekliyoruz.
+
+		        int rowsAffected = statement.executeUpdate(); // Güncelleme işlemi sonucunda etkilenen satır sayısını alıyoruz.
+
+		        return rowsAffected > 0; // Eğer en az bir satır silindiyse true döner, aksi takdirde false döner.
+		    } catch (SQLException e) {
+		        e.printStackTrace(); // Hata durumunda hata mesajını yazdırıyoruz.
+		        return false;
+		    } finally {
+		        db.closeConnection(conn); // Bağlantıyı kapatıyoruz.
+		    }
 	}
 
 	@Override
-	public List<Word> Select(int i) {
+	public List<Word> Select() {
 		List<Word> wordList = new ArrayList<>();
 	    ConnectDB db = new ConnectDB();
 	    Connection conn = db.getConnection();

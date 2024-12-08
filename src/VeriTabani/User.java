@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class User implements IUser {
@@ -77,22 +78,124 @@ public class User implements IUser {
         }
     }
 	@Override
-	public Boolean Update(User item) {
-return true;		
+	public Boolean Update(User user) {
+	    boolean isUpdated = false;
+
+	    ConnectDB db = new ConnectDB();
+	    Connection conn = db.getConnection();
+	    PreparedStatement pstmt = null;
+
+	    try {
+	        String sql = "UPDATE Users SET FirstName_LastName = ?, email = ?, Status = ? WHERE id = ?";
+
+	        pstmt = conn.prepareStatement(sql);
+
+	        // Parametreleri ayarla
+	        pstmt.setString(1, user.getFirstNameLastName());
+	        pstmt.setString(2, user.getEmail());
+	        pstmt.setString(3, user.getStatus());
+	        pstmt.setInt(4, user.getId());
+
+	        // Sorguyu çalıştır
+	        int affectedRows = pstmt.executeUpdate();
+
+	        // Eğer herhangi bir satır güncellendiyse başarılı
+	        isUpdated = affectedRows > 0;
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	            if (pstmt != null) pstmt.close();
+	            if (conn != null) conn.close();
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
+	    }
+
+	    return isUpdated;
 	}
+
 	@Override
 	public Boolean Delete(int id) {
-		return true;		
+		  boolean isDeleted = false;
 
+		    ConnectDB db = new ConnectDB();
+		    Connection conn = db.getConnection();
+		    PreparedStatement pstmt = null;
+
+		    try {
+		        String sql = "DELETE FROM Users WHERE id = ?";
+
+		        pstmt = conn.prepareStatement(sql);
+
+		        // Parametreyi ayarla
+		        pstmt.setInt(1, id);
+
+		        // Sorguyu çalıştır
+		        int affectedRows = pstmt.executeUpdate();
+
+		        // Eğer herhangi bir satır silindiyse başarılı
+		        isDeleted = affectedRows > 0;
+
+		    } catch (Exception e) {
+		        e.printStackTrace();
+		    } finally {
+		        try {
+		            if (pstmt != null) pstmt.close();
+		            if (conn != null) conn.close();
+		        } catch (Exception e) {
+		            e.printStackTrace();
+		        }
+		    }
+
+		    return isDeleted;
 		
 	}
 	@Override
-	public List<User> Select(int userid) {
+	public List<User> Select() {
+        List<User> userList = new ArrayList<>();
+        					
+        ConnectDB db = new ConnectDB();
+        Connection conn = db.getConnection();
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
 
-		
-		
-		return null;
-	}
+        try {
+            String sql = "SELECT * FROM Users";
+           
+            pstmt = conn.prepareStatement(sql);
+
+           
+
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                User user = new User();
+                user.setId(rs.getInt("id"));
+                user.setFirstNameLastName(rs.getString("FirstName_LastName"));
+                user.setEmail(rs.getString("email"));
+                user.setStatus(rs.getString("Status"));
+                userList.add(user);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (pstmt != null) pstmt.close();
+                if (conn != null) conn.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        return userList;
+    }
+
+	
+	
+	
 	@Override
 	public User ListSelectById(int id) {
 		// TODO Auto-generated method stub

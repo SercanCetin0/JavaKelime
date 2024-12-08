@@ -40,7 +40,7 @@ public class UserWord implements IUserWord {
 			
 		}
 		@Override
-		public List<UserWord> Select(int userid) {
+		public List<UserWord> Select() {
 			return null;
 		}
 		@Override
