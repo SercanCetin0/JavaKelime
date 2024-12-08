@@ -63,7 +63,7 @@ public class Kelimeİslemleri extends JFrame {
         // Sample list of words (this should come from the Select() method)
         Word wordListe = new Word(); // Replace with your actual Select() call
         List<Word> wordList = wordListe.Select();
-
+        
         // Check if the wordList is not null
         if (wordList != null) {
             // Table column names
