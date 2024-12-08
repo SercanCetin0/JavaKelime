@@ -135,6 +135,7 @@ public class Uyeİslemleri extends JFrame {
         		            System.out.println("Lütfen tüm alanları doldurun.");
         		            return;
         		        }
+        		        status=status.toUpperCase();
 
         		        try {
         		            int id = Integer.parseInt(idText);

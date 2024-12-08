@@ -81,7 +81,7 @@ public class Anasayfa extends JFrame {
         contentPane.add(btnNewButton_2);
  
         // Eğer kullanıcı Admin ise, Admin Sayfası butonunu ekle
-        if (rol.equals("Admin")) {
+        if (rol.equals("ADMİN")) {
             JButton btnNewButton_3 = new JButton("Admin Sayfası");
             btnNewButton_3.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {

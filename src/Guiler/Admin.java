@@ -69,6 +69,13 @@ public class Admin extends JFrame {
 		contentPane.add(btnKelimeIlemleri);
 		
 		JButton btnkYap = new JButton("Çıkış Yap");
+		btnkYap.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				dispose();
+				Login login=new Login();
+				login.setVisible(true);
+			}
+		});
 		btnkYap.setForeground(new Color(255, 0, 0));
 		btnkYap.setBounds(57, 99, 111, 23);
 		contentPane.add(btnkYap);
