@@ -3,6 +3,7 @@ package VeriTabani;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,12 +28,29 @@ public class Categories implements ICategories{
    
 	@Override
 	public Boolean Create(Categories item) {
-		return true;
+		try (Connection conn = new ConnectDB().getConnection();
+	             PreparedStatement pstmt = conn.prepareStatement("INSERT INTO Categories (CateName) VALUES (?)")) {
+	            pstmt.setString(1, item.CateName);
+	            pstmt.executeUpdate();
+	            return true;
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	            return false;
+	        }
 		
 	}
 	@Override
 	public Boolean Update(Categories item) {
-		return true;
+		try (Connection conn = new ConnectDB().getConnection();
+	             PreparedStatement pstmt = conn.prepareStatement("UPDATE Categories SET CateName = ? WHERE id = ?")) {
+	            pstmt.setString(1, item.CateName);
+	            pstmt.setInt(2, item.id);
+	            pstmt.executeUpdate();
+	            return true;
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	            return false;
+	        }
 		
 	}
 	@Override
